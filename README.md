@@ -1,70 +1,123 @@
-# Medical Transcription & NLP Sentiment Analysis Intelligence
+# Medical Transcription & Text Processing Intelligence (NLP)
 
-An end-to-end Natural Language Processing (NLP) web application built using Python, Scikit-Learn, and Flask. It provides clinical text intelligence, medical transcription analysis, named entity extraction (NER), and sentiment classification on the provided dataset (`data.csv`).
+[![Python](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://www.python.org/)
+[![Flask](https://img.shields.io/badge/Framework-Flask-green.svg)](https://flask.palletsprojects.com/)
+[![Scikit-Learn](https://img.shields.io/badge/ML-Scikit--Learn-orange.svg)](https://scikit-learn.org/)
+[![License](https://img.shields.io/badge/License-MIT-purple.svg)](LICENSE)
 
-## 🌟 Key Features
-
-1. **Medical Transcription & Clinical Text Extraction (`medical_nlp.py`)**:
-   - **Medical Specialty Classifier**: Categorizes transcripts into Cardiology, Neurology, Pulmonology, Gastroenterology, Orthopedics, Oncology, Dermatology, Psychiatry, or General Medicine.
-   - **Clinical Entity Extraction (NER)**: Automatically extracts Symptoms, Anatomical Structures, Medications/Treatments, and Procedures/Surgeries.
-   - **Risk & Outlook Assessment**: Evaluates clinical urgency (High/Critical, Moderate, Low/Stable).
-
-2. **Sentiment Analysis Machine Learning Pipeline (`train.py`)**:
-   - Uses **TF-IDF Feature Union** (Word N-grams + Character WB N-grams) with Logistic Regression.
-   - Evaluates and outputs accuracy, precision, recall, and class distribution stats.
-
-3. **High-Contrast Accessible UI (`static/css/styles.css`)**:
-   - **Accessible Contrast Design**: High contrast typography and color palettes for maximum legibility (WCAG AAA compliant contrast ratios).
-   - **Dark & Light Mode Toggle**: One-click toggle between Dark Slate Mode and Crisp Light Mode.
-   - **Interactive Visualizations**: Progress bars for class probabilities and Chart.js pie chart for dataset distribution.
-
-4. **Batch Explorer & API Endpoints (`app.py`)**:
-   - Real-time single sentence analyzer.
-   - Batch CSV runner for thousands of rows.
-   - REST API endpoints (`/api/predict`, `/api/medical-analyze`, `/api/batch-predict`, `/api/dataset-stats`).
+An end-to-end Natural Language Processing (NLP) & Medical Text Intelligence web application built with Python, Scikit-Learn, and Flask. The platform provides real-time clinical text entity extraction, medical specialty classification, patient risk scoring, and sentiment prediction on the dataset (`data.csv`).
 
 ---
 
-## 🚀 How to Run the Project
+## 🌟 Key Features
 
-1. **Install Dependencies**:
-   ```bash
-   pip install pandas scikit-learn flask matplotlib joblib uvicorn
-   ```
+1. **Medical Transcription & Clinical Entity Extractor (`medical_nlp.py`)**:
+   - **Medical Specialty Classifier**: Categorizes clinical transcripts into *Cardiology, Neurology, Pulmonology, Gastroenterology, Orthopedics, Oncology, Dermatology, Psychiatry,* or *General Medicine*.
+   - **Named Entity Recognition (NER)**: Extracts key clinical concepts including **Symptoms & Conditions**, **Anatomical Structures**, **Medications & Treatments**, and **Procedures & Surgeries**.
+   - **Risk & Outlook Scoring**: Automatically flags clinical urgency (*High/Critical, Moderate, Low/Stable*).
 
-2. **Train the NLP Model (Optional, auto-runs if models are missing)**:
-   ```bash
-   python train.py
-   ```
+2. **Machine Learning Sentiment Pipeline (`train.py`)**:
+   - **Feature Union Vectorizer**: Combines Word N-grams (1-3) and Character WB N-grams (2-5) with sublinear TF-IDF scaling.
+   - **Calibrated Classifier**: Logistic Regression / LinearSVC classifier calibrated for probability estimates.
 
-3. **Start the Web Server**:
-   ```bash
-   python app.py
-   ```
+3. **Modern Accessible Web UI (`templates/index.html` & `static/css/styles.css`)**:
+   - **Clean Minimalist Light Mode**: High-contrast, WCAG AAA compliant typography and professional color palette.
+   - **Interactive Visualization**: Sentiment probability progress bars, sample prompt presets, and Chart.js analytics charts.
+   - **Theme Switcher**: One-click toggle between Light Mode and Dark Slate Mode.
 
-4. **Open in Browser**:
-   Navigate to `http://localhost:5000` or `http://127.0.0.1:5000`.
+4. **Batch Processing & REST APIs (`app.py`)**:
+   - **Single Text Analyzer**: Real-time extraction and confidence breakdown.
+   - **Batch Explorer**: Runs dataset predictions across thousands of rows.
+   - **REST APIs**: `/api/predict`, `/api/medical-analyze`, `/api/batch-predict`, and `/api/dataset-stats`.
+
+---
+
+## 🚀 Quick Start Guide
+
+### 1. Clone the Repository
+```bash
+git clone https://github.com/adityasingh463/medicaltextprocessing.git
+cd medicaltextprocessing
+```
+
+### 2. Install Dependencies
+```bash
+pip install -r requirements.txt
+```
+
+### 3. Run the Web Server
+```bash
+python app.py
+```
+
+### 4. Access the Web App
+Open your browser and navigate to:
+```
+http://localhost:5000
+```
+
+---
+
+## 📡 REST API Documentation
+
+### `POST /api/predict`
+Analyzes a single clinical text input.
+- **Request Body**: `{"text": "Patient presents with severe chest pain and dyspnea."}`
+- **Response**:
+```json
+{
+  "success": true,
+  "sentiment": "neutral",
+  "confidence": 78.5,
+  "probabilities": {
+    "positive": 12.3,
+    "neutral": 78.5,
+    "negative": 9.2
+  },
+  "medical_analysis": {
+    "specialty": "Cardiology",
+    "risk_level": "High (Urgent Attention Required)",
+    "entities": {
+      "Symptoms": ["Chest Pain", "Dyspnea"],
+      "Anatomy": ["Chest"],
+      "Procedures": ["ECG"]
+    }
+  }
+}
+```
+
+### `GET /api/dataset-stats`
+Returns dataset distribution counters and model training metrics.
 
 ---
 
 ## 📁 Project Structure
 
 ```
-nlpproject/
+medicaltextprocessing/
 │
 ├── data.csv                 # Dataset file (Sentence, Sentiment)
-├── train.py                 # Model training & vectorization script
-├── medical_nlp.py           # Medical NLP entity extraction & specialty engine
+├── train.py                 # ML training & feature vectorization pipeline
+├── medical_nlp.py           # Medical specialty & clinical NER engine
 ├── app.py                   # Flask server & REST API endpoints
-├── models/                  # Trained ML models and vectorizers
+├── wsgi.py                  # Production WSGI entrypoint
+├── Procfile                 # Production server configuration (Gunicorn)
+├── requirements.txt         # Python package dependencies
+├── README.md                # Project documentation
+├── models/                  # Saved ML models & vectorizers
 │   ├── sentiment_model.pkl
 │   ├── tfidf_vectorizer.pkl
 │   └── metrics.pkl
 ├── templates/
-│   └── index.html           # Main web interface template
+│   └── index.html           # Main web application HTML template
 └── static/
     ├── css/
-    │   └── styles.css       # High-contrast CSS stylesheet (Dark/Light mode)
+    │   └── styles.css       # High-contrast stylesheet (Light & Dark theme)
     └── js/
-        └── main.js          # Interactive UI logic & API integrations
+        └── main.js          # Interactive JavaScript client logic
 ```
+
+---
+
+## 🛡️ License
+This project is open-source under the [MIT License](LICENSE).
