@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Transcription & NLP Sentiment Intelligence</title>
+    <!-- Font Awesome Icons & Google Fonts -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <!-- Chart.js for data visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+
+    <!-- Top Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="brand">
+                <i class="fa-solid fa-notes-medical brand-icon"></i>
+                <div class="brand-text">
+                    <span class="brand-name">MediText <span class="accent-text">NLP</span></span>
+                    <span class="brand-tagline">Clinical Transcription & Sentiment Analytics</span>
+                </div>
+            </div>
+
+            <div class="nav-actions">
+                <button id="theme-toggle" class="btn-theme-toggle" title="Toggle Light / Dark Contrast Theme">
+                    <i class="fa-solid fa-sun icon-sun"></i>
+                    <i class="fa-solid fa-moon icon-moon"></i>
+                    <span class="theme-label">Theme Mode</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="main-layout">
+        
+        <!-- Header Banner -->
+        <header class="header-banner">
+            <div class="banner-content">
+                <div class="badge-pill"><i class="fa-solid fa-brain"></i> NLP & Machine Learning Engine</div>
+                <h1>Medical Transcription & Text Intelligence</h1>
+                <p class="subtitle">Extract clinical entities, medical specialties, patient outlooks, and sentiment classification from clinical notes and text datasets with high precision.</p>
+            </div>
+            <div class="banner-stats" id="quick-stats-bar">
+                <div class="stat-card">
+                    <span class="stat-value" id="stat-total-samples">5,842</span>
+                    <span class="stat-label">Trained Records</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-value" id="stat-model-acc">69.7%</span>
+                    <span class="stat-label">Model Accuracy</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-value" id="stat-specialties">8</span>
+                    <span class="stat-label">Medical Domains</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Navigation Tabs -->
+        <div class="tabs-bar">
+            <button class="tab-btn active" data-tab="tab-analyzer">
+                <i class="fa-solid fa-stethoscope"></i> Clinical & Text Analyzer
+            </button>
+            <button class="tab-btn" data-tab="tab-batch">
+                <i class="fa-solid fa-file-csv"></i> Batch Dataset Explorer
+            </button>
+            <button class="tab-btn" data-tab="tab-analytics">
+                <i class="fa-solid fa-chart-pie"></i> Model Analytics & Metrics
+            </button>
+        </div>
+
+        <!-- TAB 1: Real-time Analyzer -->
+        <section id="tab-analyzer" class="tab-content active">
+            <div class="grid-2col">
+                <!-- Left Input Panel -->
+                <div class="card panel-card">
+                    <div class="card-header">
+                        <h2><i class="fa-solid fa-pen-to-square"></i> Input Transcript / Text</h2>
+                        <span class="badge badge-outline">Live Processing</span>
+                    </div>
+
+                    <!-- Preset Samples -->
+                    <div class="presets-wrapper">
+                        <span class="presets-title"><i class="fa-solid fa-bolt"></i> Sample Prompts:</span>
+                        <div class="preset-buttons" id="preset-container">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <textarea id="text-input" rows="8" placeholder="Type or paste medical transcription, patient clinical note, or text sentence here..."></textarea>
+                    </div>
+
+                    <div class="action-buttons">
+                        <button id="btn-analyze" class="btn btn-primary">
+                            <i class="fa-solid fa-microscope"></i> Analyze Text
+                        </button>
+                        <button id="btn-clear" class="btn btn-secondary">
+                            <i class="fa-solid fa-rotate-left"></i> Clear
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Right Results Panel -->
+                <div class="card panel-card">
+                    <div class="card-header">
+                        <h2><i class="fa-solid fa-square-poll-vertical"></i> Analysis Results</h2>
+                        <span id="sentiment-badge" class="badge badge-neutral">Awaiting Input</span>
+                    </div>
+
+                    <div id="results-empty" class="empty-state">
+                        <i class="fa-solid fa-file-medical-text empty-icon"></i>
+                        <h3>No Text Analyzed Yet</h3>
+                        <p>Select a sample prompt above or enter clinical notes to view medical entity extractions, risk scoring, and sentiment predictions.</p>
+                    </div>
+
+                    <div id="results-content" class="results-container hidden">
+                        <!-- Confidence & Sentiment Bar -->
+                        <div class="metrics-summary-box">
+                            <div class="metric-item">
+                                <span class="metric-label">Predicted Sentiment</span>
+                                <span id="res-sentiment" class="metric-val text-capitalize">-</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">Confidence Score</span>
+                                <span id="res-confidence" class="metric-val">-</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">Medical Specialty</span>
+                                <span id="res-specialty" class="metric-val text-accent">-</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">Clinical Risk Level</span>
+                                <span id="res-risk" class="metric-val">-</span>
+                            </div>
+                        </div>
+
+                        <!-- Class Probabilities Progress Bars -->
+                        <div class="result-section">
+                            <h4><i class="fa-solid fa-chart-bar"></i> Sentiment Class Probabilities</h4>
+                            <div class="prob-bars">
+                                <div class="prob-row">
+                                    <span class="prob-name">Positive</span>
+                                    <div class="progress-bg"><div id="bar-positive" class="progress-fill fill-positive" style="width: 0%"></div></div>
+                                    <span id="val-positive" class="prob-num">0%</span>
+                                </div>
+                                <div class="prob-row">
+                                    <span class="prob-name">Neutral</span>
+                                    <div class="progress-bg"><div id="bar-neutral" class="progress-fill fill-neutral" style="width: 0%"></div></div>
+                                    <span id="val-neutral" class="prob-num">0%</span>
+                                </div>
+                                <div class="prob-row">
+                                    <span class="prob-name">Negative</span>
+                                    <div class="progress-bg"><div id="bar-negative" class="progress-fill fill-negative" style="width: 0%"></div></div>
+                                    <span id="val-negative" class="prob-num">0%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Extracted Medical Entities -->
+                        <div class="result-section">
+                            <h4><i class="fa-solid fa-capsules"></i> Clinical Entities Extracted</h4>
+                            <div class="entities-grid" id="entities-container">
+                                <!-- Populated dynamically -->
+                            </div>
+                        </div>
+
+                        <!-- Brief Clinical Summary -->
+                        <div class="result-section">
+                            <h4><i class="fa-solid fa-quote-left"></i> Summary Preview</h4>
+                            <p id="res-summary" class="summary-text">-</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2: Batch Dataset Explorer -->
+        <section id="tab-batch" class="tab-content">
+            <div class="card panel-card">
+                <div class="card-header">
+                    <div>
+                        <h2><i class="fa-solid fa-table-list"></i> Dataset & Batch Processing Explorer</h2>
+                        <p class="header-desc">Inspect predictions across the provided medical transcription and sentiment dataset.</p>
+                    </div>
+                    <div class="header-tools">
+                        <button id="btn-load-dataset" class="btn btn-primary btn-sm">
+                            <i class="fa-solid fa-database"></i> Run Batch Prediction (data.csv)
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Batch Summary Cards -->
+                <div id="batch-stats-container" class="grid-4col hidden">
+                    <div class="mini-stat-card">
+                        <span class="mini-val" id="batch-total">0</span>
+                        <span class="mini-lbl">Rows Processed</span>
+                    </div>
+                    <div class="mini-stat-card border-pos">
+                        <span class="mini-val text-pos" id="batch-pos">0</span>
+                        <span class="mini-lbl">Positive Records</span>
+                    </div>
+                    <div class="mini-stat-card border-neu">
+                        <span class="mini-val text-neu" id="batch-neu">0</span>
+                        <span class="mini-lbl">Neutral Records</span>
+                    </div>
+                    <div class="mini-stat-card border-neg">
+                        <span class="mini-val text-neg" id="batch-neg">0</span>
+                        <span class="mini-lbl">Negative Records</span>
+                    </div>
+                </div>
+
+                <!-- Table Container -->
+                <div class="table-responsive">
+                    <table class="data-table" id="batch-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Sentence / Medical Transcript</th>
+                                <th>Predicted Sentiment</th>
+                                <th>Confidence</th>
+                                <th>Medical Specialty</th>
+                                <th>Risk Level</th>
+                            </tr>
+                        </thead>
+                        <tbody id="batch-table-body">
+                            <tr>
+                                <td colspan="6" class="text-center text-muted">Click "Run Batch Prediction" to load dataset preview and predictions.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 3: Model Analytics & Metrics -->
+        <section id="tab-analytics" class="tab-content">
+            <div class="grid-2col">
+                <div class="card panel-card">
+                    <div class="card-header">
+                        <h2><i class="fa-solid fa-chart-donut"></i> Dataset Class Distribution</h2>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="chart-sentiment-dist"></canvas>
+                    </div>
+                </div>
+
+                <div class="card panel-card">
+                    <div class="card-header">
+                        <h2><i class="fa-solid fa-sliders"></i> Classification Performance</h2>
+                    </div>
+                    <div id="classification-metrics-table" class="metrics-details">
+                        <!-- Populated dynamically -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <p><i class="fa-solid fa-shield-halved"></i> Medical Transcription NLP System &bull; High-Contrast Accessible UI</p>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
