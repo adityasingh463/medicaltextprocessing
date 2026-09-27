@@ -1,11 +1,19 @@
 # Medical Transcription & Text Processing Intelligence (NLP)
 
-[![Python](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://www.python.org/)
-[![Flask](https://img.shields.io/badge/Framework-Flask-green.svg)](https://flask.palletsprojects.com/)
-[![Scikit-Learn](https://img.shields.io/badge/ML-Scikit--Learn-orange.svg)](https://scikit-learn.org/)
-[![License](https://img.shields.io/badge/License-MIT-purple.svg)](LICENSE)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Render-00E599.svg?style=for-the-badge&logo=render&logoColor=white)](https://medicaltextprocessing.onrender.com/)
+[![Python](https://img.shields.io/badge/Python-3.9+-blue.svg?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
+[![Flask](https://img.shields.io/badge/Framework-Flask-green.svg?style=for-the-badge&logo=flask&logoColor=white)](https://flask.palletsprojects.com/)
+[![Scikit-Learn](https://img.shields.io/badge/ML-Scikit--Learn-orange.svg?style=for-the-badge&logo=scikitlearn&logoColor=white)](https://scikit-learn.org/)
 
 An end-to-end Natural Language Processing (NLP) & Medical Text Intelligence web application built with Python, Scikit-Learn, and Flask. The platform provides real-time clinical text entity extraction, medical specialty classification, patient risk scoring, and sentiment prediction on the dataset (`data.csv`).
+
+---
+
+## 🌐 Live Web Application
+
+👉 **[https://medicaltextprocessing.onrender.com/](https://medicaltextprocessing.onrender.com/)**
+
+Try out the live web app online directly on Render!
 
 ---
 
@@ -32,7 +40,7 @@ An end-to-end Natural Language Processing (NLP) & Medical Text Intelligence web 
 
 ---
 
-## 🚀 Quick Start Guide
+## 🚀 Quick Start Guide (Local Setup)
 
 ### 1. Clone the Repository
 ```bash
@@ -50,7 +58,7 @@ pip install -r requirements.txt
 python app.py
 ```
 
-### 4. Access the Web App
+### 4. Access the Web App Locally
 Open your browser and navigate to:
 ```
 http://localhost:5000
@@ -102,6 +110,7 @@ medicaltextprocessing/
 ├── app.py                   # Flask server & REST API endpoints
 ├── wsgi.py                  # Production WSGI entrypoint
 ├── Procfile                 # Production server configuration (Gunicorn)
+├── render.yaml              # Render 1-click deployment Blueprint
 ├── requirements.txt         # Python package dependencies
 ├── README.md                # Project documentation
 ├── models/                  # Saved ML models & vectorizers
